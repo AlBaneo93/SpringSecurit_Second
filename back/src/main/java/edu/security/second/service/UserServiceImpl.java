@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
+/*
+* UserDetailsService : Springsecurity에서 제공하는 유저 검증 프로세스를 위한 인터페이스
+* */
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
