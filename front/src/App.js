@@ -1,16 +1,11 @@
-import React, { Component } from "react";
-import "./App.css";
-import { hot } from "react-hot-loader";
-import Home from "./components/Home";
+import Home from "./components/home";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <Home />
-      </div>
-    );
-  }
+function App() {
+  return (
+    <div className="App">
+      <Home />
+    </div>
+  );
 }
 
-export default hot(App);
+export default App;
