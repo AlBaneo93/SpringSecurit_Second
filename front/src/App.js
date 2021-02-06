@@ -1,23 +1,29 @@
 import React from 'react'
-import About from "./components/About";
-import Admin from "./components/Admin";
-import Home from "./components/Home";
-import Signin from "./components/Signin";
-import Signup from "./components/Signup";
+
+import Header from "./components/Header";
+import Body from "./components/Body";
 
 class App extends React.Component {
-    render() {
-        return (
-            <div className="App">
-                <h1>App.js</h1>
-                <About/>
-                <Admin/>
-                <Home/>
-                <Signin/>
-                <Signup/>
-            </div>
-        )
+  render() {
+    const headerStyle = {
+      height: "25px",
+      margin: 0
     }
+    const bodyStyle = {
+      height: "90vh",
+      margin: 0,
+    }
+    return (
+      <div className="App">
+        <div style={headerStyle}>
+          <Header/>
+        </div>
+        <div style={bodyStyle}>
+          <Body/>
+        </div>
+      </div>
+    )
+  }
 }
 
 export default App;
