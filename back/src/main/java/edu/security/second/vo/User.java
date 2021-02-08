@@ -1,6 +1,5 @@
 package edu.security.second.vo;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,13 +18,11 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long Id;
 
-  private String userName;
+  private String name;
 
-  private String userMail;
+  private String email;
 
   private String password;
-
-  private String name;
 
   private String Role;
 }
