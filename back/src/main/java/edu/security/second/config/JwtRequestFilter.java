@@ -2,7 +2,7 @@ package edu.security.second.config;
 
 import edu.security.second.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,12 +25,12 @@ import java.util.List;
  * */
 @Slf4j
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
   private static final List<String> EXCLUDE_URL = Collections.unmodifiableList(
       Arrays.asList(
-          "/api/member",
+          "/api/v1/users",
           "/authenticate"
       )
   );
@@ -53,7 +53,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     String username = null;
     String jwtToken = null;
 
-    if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer")) {
+    if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
       jwtToken = requestTokenHeader.substring(7); // Bearer 문자열 제거
       try {
         username = jwtTokenUtil.getUsernameFromToken(jwtToken);

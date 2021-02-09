@@ -3,19 +3,26 @@ package edu.security.second.config;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Function;
 
+@Slf4j
 @Component
 public class JwtTokenUtil {
 
   public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
-  private static final String secret = "jwtpassword";
+  private static final SecretKey skey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+  private static final String secret = Encoders.BASE64.encode(skey.getEncoded());
 
   public String getUsernameFromToken(String token) {
     return getClaimFromToken(token, Claims::getId);
@@ -28,7 +35,11 @@ public class JwtTokenUtil {
 
   private Claims getAllClaimsFromToken(String token) {
     //    TODO : read a JWT library's ChangeLog
-    return Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token).getBody();
+    return Jwts.parserBuilder()
+               .setSigningKey(skey)
+               .build()
+               .parseClaimsJws(token)
+               .getBody();
   }
 
   private Boolean isTokenExpired(String token) {
@@ -55,13 +66,17 @@ public class JwtTokenUtil {
                .setId(id)
                .setIssuedAt(new Date(System.currentTimeMillis()))
                .setExpiration(new Date((System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000)))
-               .signWith(SignatureAlgorithm.ES512, secret)
+               .signWith(skey)
                .compact();
   }
 
   //  TODO : UserDetails???
   public Boolean validateToken(String token, UserDetails userDetails) {
     final String username = getUsernameFromToken(token);
+    log.debug("validate Token - Username: " + userDetails.getUsername());
+    log.debug("validate Token - UserDetails: " + userDetails.toString());
     return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
   }
+
+
 }

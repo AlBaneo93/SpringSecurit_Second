@@ -1,37 +1,47 @@
 package edu.security.second.service;
 
+import edu.security.second.Exception.UserNotFoundException;
 import edu.security.second.repository.UserRepository;
+import edu.security.second.vo.Role;
 import edu.security.second.vo.User;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /*
  * UserDetailsService : Springsecurity에서 제공하는 유저 검증 프로세스를 위한 인터페이스
  * */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
   private UserRepository userRepository;
 
-  private BCryptPasswordEncoder bCryptPasswordEncoder;
+  private PasswordEncoder passwordEncoder;
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User user = userRepository.findByName(username).orElseThrow(() -> new IllegalArgumentException(username + "is not exist"));
-    return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), Arrays.asList(new SimpleGrantedAuthority(user.getRole())));
-  }
+  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException(email + " is not exist"));
+    log.debug("Service - UserDetails User: " + user.toString());
+    Set<GrantedAuthority> grantedAuthoritySet = new HashSet<>();
+    grantedAuthoritySet.add(new SimpleGrantedAuthority(Role.USER.getValue()));
 
-  @Override
-  public User SignUp(User user) {
-    return userRepository.save(user);
+    if (email.equals("my_email@gmail.com")) {
+      grantedAuthoritySet.add(new SimpleGrantedAuthority(Role.ADMIN.getValue()));
+    }
+
+    //    org.springframework.security.core.userdetails.User 객체의 파라미터 중 하나라도 null일 경우 cannot pass null or empty values to constructor 에러 발생
+    return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthoritySet);
   }
 
   /*
@@ -43,10 +53,32 @@ public class UserServiceImpl implements UserService {
     User user = userRepository.findByEmail(email)
                               .orElseThrow(() -> new UsernameNotFoundException(email));
 
-    if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
+    if (!passwordEncoder.matches(password, user.getPassword())) {
       throw new BadCredentialsException("Password not Matched");
     }
 
     return user;
   }
+
+  @Override
+  public User getOneUser(String email) throws UserNotFoundException {
+    return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+  }
+
+  @Override
+  public List<User> getAllUsers() {
+    return userRepository.findAll();
+  }
+
+  @Override
+  public Boolean deleteUser(String email) {
+    return userRepository.deleteUserByEmail(email);
+  }
+
+  @Override
+  public User saveUser(User user) {
+    return userRepository.save(user);
+  }
+
+
 }

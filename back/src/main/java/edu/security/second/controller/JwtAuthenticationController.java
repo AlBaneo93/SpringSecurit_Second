@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class JwtAuthenticationController {
 
   private JwtTokenUtil jwtTokenUtil;
@@ -28,8 +28,9 @@ public class JwtAuthenticationController {
     return ResponseEntity.ok(new JwtResponse(token)); // TODO : ReponseEntity.ok()
   }
 
-  // DTO
+  // JWT DTO
   @Data
+  static
   class JwtRequest {
     private String email;
 
@@ -38,6 +39,7 @@ public class JwtAuthenticationController {
 
   @Data
   @AllArgsConstructor
+  static
   class JwtResponse {
     private String token;
   }
