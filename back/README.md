@@ -1,6 +1,6 @@
 # SpringSecurit_Second
 
-## TODO
+## Objective
 1. Spring Security와 Rest API를 구현한다
 2. 기존 세션기반 인증 대신 JWT를 이용한 사용자 관리를 구현한다.
 3. 위의 사항들을 합하여 기본적인 사용자 가입/로그인/인증을 구현한다.
