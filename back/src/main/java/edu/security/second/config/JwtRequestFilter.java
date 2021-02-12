@@ -26,6 +26,7 @@ import java.util.List;
 @Slf4j
 @Component
 @AllArgsConstructor
+// TODO OncePerRequestFilter
 public class JwtRequestFilter extends OncePerRequestFilter {
 
   private static final List<String> EXCLUDE_URL = Collections.unmodifiableList(
@@ -49,7 +50,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
     final String requestTokenHeader = request.getHeader("Authorization");
-
+    log.info("JwtRequestFilter Access");
     String username = null;
     String jwtToken = null;
 

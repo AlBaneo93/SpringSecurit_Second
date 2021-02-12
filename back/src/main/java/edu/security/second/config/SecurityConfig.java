@@ -48,12 +48,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .logoutSuccessUrl("/login").invalidateHttpSession(true);
 
 
+    // 에러가 발생했을때 사용할 EntryPoint
     http.exceptionHandling()
         .authenticationEntryPoint(jwtAuthenticationEntryPoint);
 
-
     http
         .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
   }
 
 

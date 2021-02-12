@@ -5,7 +5,6 @@ import edu.security.second.service.UserService;
 import edu.security.second.vo.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +24,7 @@ public class JwtAuthenticationController {
     final User user = userService.authenticationByEmailAndPassword(authenticationRequest.getEmail(), authenticationRequest.getPassword());
 
     final String token = jwtTokenUtil.generateToken(user.getEmail());
+    // new ResponseEntity<>(map, HttpStatus.OK); == ResponseEntity.ok(map)
     return ResponseEntity.ok(new JwtResponse(token)); // TODO : ReponseEntity.ok()
   }
 
